@@ -1,0 +1,155 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile for interns, mentors, and administrators.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "role": { "type": "string", "enum": ["peserta", "mentor", "admin"] },
+        "avatar": { "type": "string" },
+        "institution": { "type": "string" },
+        "major": { "type": "string" },
+        "nimOrNis": { "type": "string" },
+        "divisionId": { "type": "string" },
+        "divisionName": { "type": "string" },
+        "mentorId": { "type": "string" },
+        "mentorName": { "type": "string" },
+        "startDate": { "type": "string" },
+        "endDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["Aktif", "Selesai", "Cuti"] },
+        "phone": { "type": "string" },
+        "address": { "type": "string" },
+        "bio": { "type": "string" },
+        "skills": { "type": "array" }
+      },
+      "required": ["id", "name", "email", "role"]
+    },
+    "Division": {
+      "title": "Division",
+      "description": "Operating division/department within the internship program.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "headName": { "type": "string" },
+        "description": { "type": "string" },
+        "internCount": { "type": "number" }
+      },
+      "required": ["id", "name"]
+    },
+    "AttendanceRecord": {
+      "title": "AttendanceRecord",
+      "description": "Daily check-in and check-out attendance record.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "date": { "type": "string" },
+        "checkInTime": { "type": "string" },
+        "checkOutTime": { "type": "string" },
+        "status": { "type": "string", "enum": ["Hadir", "Izin", "Sakit", "Alpa"] },
+        "workMode": { "type": "string", "enum": ["WFO", "WFH"] },
+        "location": { "type": "string" },
+        "notes": { "type": "string" }
+      },
+      "required": ["id", "userId", "date", "status"]
+    },
+    "LogbookEntry": {
+      "title": "LogbookEntry",
+      "description": "Daily work log submitted by an intern.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "userName": { "type": "string" },
+        "divisionName": { "type": "string" },
+        "date": { "type": "string" },
+        "activityTitle": { "type": "string" },
+        "workDescription": { "type": "string" },
+        "learningGained": { "type": "string" },
+        "blockersOrChallenges": { "type": "string" },
+        "nextDayPlan": { "type": "string" },
+        "hoursSpent": { "type": "number" },
+        "status": { "type": "string", "enum": ["Draft", "Menunggu Review", "Disetujui", "Perlu Revisi"] },
+        "mentorFeedback": { "type": "string" },
+        "reviewedAt": { "type": "string" },
+        "reviewedBy": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "userId", "activityTitle", "workDescription", "status", "date"]
+    },
+    "TaskItem": {
+      "title": "TaskItem",
+      "description": "Task assigned to intern by mentor.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "assignedToUserId": { "type": "string" },
+        "assignedToUserName": { "type": "string" },
+        "assignedByMentorId": { "type": "string" },
+        "assignedByMentorName": { "type": "string" },
+        "divisionName": { "type": "string" },
+        "dueDate": { "type": "string" },
+        "priority": { "type": "string", "enum": ["Tinggi", "Sedang", "Rendah"] },
+        "status": { "type": "string", "enum": ["Belum Dikerjakan", "Sedang Dikerjakan", "Menunggu Review", "Selesai"] },
+        "submissionLink": { "type": "string" },
+        "submissionNotes": { "type": "string" },
+        "submittedAt": { "type": "string" },
+        "score": { "type": "number" },
+        "mentorFeedback": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["id", "title", "assignedToUserId", "dueDate", "priority", "status"]
+    },
+    "LearningJournalEntry": {
+      "title": "LearningJournalEntry",
+      "description": "Reflective learning journal entry.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "date": { "type": "string" },
+        "title": { "type": "string" },
+        "keyLearning": { "type": "string" },
+        "improvementPlan": { "type": "string" },
+        "category": { "type": "string", "enum": ["Hard Skill", "Soft Skill", "Kolaborasi", "Problem Solving"] },
+        "tags": { "type": "array" },
+        "mood": { "type": "string" }
+      },
+      "required": ["id", "userId", "date", "title", "keyLearning"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "User" },
+      "description": "User profiles for participants, mentors, and administrators."
+    },
+    "/divisions/{divisionId}": {
+      "schema": { "$ref": "Division" },
+      "description": "Divisions and departments."
+    },
+    "/attendance/{attendanceId}": {
+      "schema": { "$ref": "AttendanceRecord" },
+      "description": "Daily attendance logs."
+    },
+    "/logbooks/{logbookId}": {
+      "schema": { "$ref": "LogbookEntry" },
+      "description": "Intern daily work reports."
+    },
+    "/tasks/{taskId}": {
+      "schema": { "$ref": "TaskItem" },
+      "description": "Intern assignment tasks."
+    },
+    "/journals/{journalId}": {
+      "schema": { "$ref": "LearningJournalEntry" },
+      "description": "Reflective learning journals."
+    }
+  }
+}

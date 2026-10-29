@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global Safety Net: default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isEmailAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "tobapriangan321@gmail.com" ||
+        request.auth.token.email == "admin.program@maganghebat.id"
+      );
+    }
+
+    // Users Collection
+    match /users/{userId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn() && (isOwner(userId) || isEmailAdmin());
+      allow delete: if isEmailAdmin();
+    }
+
+    // Divisions Collection
+    match /divisions/{divisionId} {
+      allow read: if isSignedIn();
+      allow write: if isEmailAdmin();
+    }
+
+    // Attendance Collection
+    match /attendance/{attendanceId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isEmailAdmin();
+    }
+
+    // Logbooks Collection
+    match /logbooks/{logbookId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isEmailAdmin();
+    }
+
+    // Tasks Collection
+    match /tasks/{taskId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isEmailAdmin();
+    }
+
+    // Journals Collection
+    match /journals/{journalId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn();
+      allow update: if isSignedIn();
+      allow delete: if isEmailAdmin();
+    }
+  }
+}
